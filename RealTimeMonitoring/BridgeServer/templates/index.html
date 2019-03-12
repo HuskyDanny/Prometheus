@@ -1,0 +1,25 @@
+<!doctype html>
+   <html>
+   <head>
+       <title>Data Export</title>
+   </head>
+     <body>
+      <form action="/todb" method="POST">
+        FileName:<br>
+        <input type="text" name="filename" value="test.csv">
+        <br>
+        MetricName:<br>
+        <select name="metricname">
+        <option value="All_timestamps">All_timestamps</option>
+        <option value="cpu_status">Cpu_status</option>
+        <option value="fiat">Fiat</option>
+        </select>
+        <br>
+        Period:<br>
+        <input type="text" name="period" value="">
+        <br><br>
+        <input type="submit" value="Submit">
+      </form> 
+
+     </body>
+</html>
