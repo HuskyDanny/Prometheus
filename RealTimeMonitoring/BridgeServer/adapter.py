@@ -6,7 +6,7 @@ import time
 from flask import request
 
 DATE_FMT = "%Y-%m-%d %H:%M:%S"
-labels = ['A_Stage','B_JobID','C_RequestID','D_StartTime','E_EndTime']
+labels = ['A_Stage','B_JobID','C_RequestID']
 
 All_timestamps = Gauge('All_timestamps', 'timestamps',labels)
 
@@ -39,15 +39,10 @@ def write(data):
             jobID = data['jobID']
             requestID = data['requestID']
             dateBefore_timeStamp = data['timeBefore']
-
-            dateBefore_str = str(datetime.utcfromtimestamp(int(dateBefore_timeStamp)).strftime(DATE_FMT))
-            datetimeAfter_str = str(datetime.now().strftime(DATE_FMT))
+            
             datetimeAfter_timeStamp = time.time()
             timeStamp = datetimeAfter_timeStamp - dateBefore_timeStamp
-            # All_timestamps.labels(stage, jobID, requestID, dateBefore_str, datetimeAfter_str).set(timeStamp)
-            All_timestamps.labels(stage, jobID, requestID, dateBefore_str, datetimeAfter_str).set(1)
-            # All_timestamps.labels(stage, jobID, requestID).set(timeStamp)
-            print(All_timestamps)
+            All_timestamps.labels(stage, jobID, requestID).set(timeStamp)
 
 
 def clearAll():

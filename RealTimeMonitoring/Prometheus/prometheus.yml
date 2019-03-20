@@ -25,9 +25,9 @@
              # scheme defaults to 'http'. 
         metrics_path: /metrics  
         static_configs:
-          - targets: ['flaskserver.azurewebsites.net']
+          - targets: ['flask:5000']
     
     alerting:
       alertmanagers:
         - static_configs:
-            - targets: ['prometheus_alertmanager_1:9093']
+            - targets: ['alertmanagerprom.azurewebsites.net']

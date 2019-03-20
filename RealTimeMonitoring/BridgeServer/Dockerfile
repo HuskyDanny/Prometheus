@@ -3,5 +3,5 @@ Run mkdir -p /usr/src/app
 Workdir /usr/src/app
 Copy . .
 RUN pip install -r requirements.txt
-EXPOSE 80
+EXPOSE 5000
 CMD ["python", "./main.py"]

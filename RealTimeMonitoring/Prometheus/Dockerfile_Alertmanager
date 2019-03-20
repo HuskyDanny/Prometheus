@@ -1,0 +1,5 @@
+FROM prom/alertmanager
+ADD ./alertmanager.yml /
+
+EXPOSE 9093
+CMD ["--config.file=/alertmanager.yml"]

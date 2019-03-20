@@ -1,8 +1,8 @@
 from flask import Flask, jsonify, render_template, request
 from prometheus_client import Gauge, start_http_server, make_wsgi_app
 from werkzeug.wsgi import DispatcherMiddleware
-from adapter import adapter
-from output import output
+import adapter
+import output
 from wtforms import Form, TextAreaField, validators
 
 
@@ -51,5 +51,5 @@ app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
 })
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port = 80)
+    app.run(host='0.0.0.0', port = 5000)
     
