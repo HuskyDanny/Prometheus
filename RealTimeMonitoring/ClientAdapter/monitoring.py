@@ -165,3 +165,44 @@ class Stopwatch(object):
     @property
     def ElapsedMs(self): return self._ms or int(round((time.time() - self.tt) * 1000))
 
+class AppMetrics(AppLog):
+
+    #overriding
+    def Flush(self):
+        ''' Flushes events queue (bulk-posts them to ElasticSearch) '''
+        (cc, bulk) = self.queue.ESBulk()
+        if bulk and self.host:
+            try:
+                with Stopwatch() as sw:
+                    res = requests.post(self.host + '/write', 
+                                        headers = {'Content-type':'application/json'},
+                                        timeout = (3.1, self._flush_timeout),
+                                        data = bulk)
+
+                if res.status_code == 200:
+                    print('AppLog.Flush: OK %d items in %d ms' % (cc, sw.ElapsedMs))
+                else:
+                    print('?AppLog.Flush: FAIL %d items in %d ms: %s' % (cc, sw.ElapsedMs, res.text or '?'))
+
+            except Exception as ex:
+                print('?AppLog.Flush: DROP %d items in %d ms: %s' % (cc, sw.ElapsedMs, ex))
+        
+    #overriding
+    class _Queue(AppLog._Queue):
+        def ESBulk(self):
+            # Serializes itself into Prometheus bulk format
+            cc = 0
+            try:
+                import cStringIO
+                bw = cStringIO.StringIO()
+            except:
+                bw = io.StringIO()
+            
+            bw.write('[')
+            json.dump(self.get_nowait(), bw, ensure_ascii=False, separators=(',',':'), default=lambda o:None if o is None else str(o))
+            for envelope in self:
+                cc += 1
+                bw.write(',')
+                json.dump(envelope, bw, ensure_ascii=False, separators=(',',':'), default=lambda o:None if o is None else str(o))
+            bw.write(']')
+            return (cc, bw.getvalue())

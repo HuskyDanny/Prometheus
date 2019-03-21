@@ -5,14 +5,13 @@ import adapter
 import output
 from wtforms import Form, TextAreaField, validators
 
+prometheus_host = 'http://prometheus:9090'
+http_port = 8000
 
 class ReviewForm(Form):
     filename = TextAreaField('',[validators.DataRequired(), validators.length(min = 5)])
     metricname = TextAreaField('',[validators.DataRequired(), validators.length(min = 5)])
     period = TextAreaField('')
-
-prometheus_host = 'http://prometheus:9090'
-http_port = 8000
 
 app = Flask(__name__)
 
@@ -51,5 +50,5 @@ app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
 })
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port = 5000)
+    app.run(host='0.0.0.0', port = 80)
     

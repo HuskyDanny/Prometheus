@@ -5,7 +5,10 @@ groups:
   # Alert for any instance that is unreachable for >5 minutes.
   - alert: InstanceDown
     expr: up == 0
+ 
+  - alert: Requestoverloaded
+    expr: rate(Bizman_Request_Latency_count[5m]) >= 1
     for: 1m
-  - alert: InstanceUp
-    expr: up == 1
-    for: 1m
+
+  - alert: BizmanLatencyOver7
+    expr: rate(Bizman_Request_Latency_sum[5m]) / rate(Bizman_Request_Latency_count[5m]) >= 7

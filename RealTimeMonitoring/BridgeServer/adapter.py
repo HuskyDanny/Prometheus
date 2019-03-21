@@ -1,5 +1,5 @@
 
-from prometheus_client import Gauge, start_http_server, REGISTRY
+from prometheus_client import Gauge, Counter, Histogram, start_http_server, REGISTRY
 from datetime import datetime
 import json
 import time
@@ -8,43 +8,31 @@ from flask import request
 DATE_FMT = "%Y-%m-%d %H:%M:%S"
 labels = ['A_Stage','B_JobID','C_RequestID']
 
-All_timestamps = Gauge('All_timestamps', 'timestamps',labels)
+QA_Request_Counts = Counter('QA_Request', 'Requests#')
+Bizman_Request_Counts = Counter('Bizman_Request','Requests#')
 
-def checkData(dimensions, data):
-    for dimension in dimensions:
-        try:
-            dummy = data[dimension]
-            if not dummy:
-                print("{0} missing data".format(dimension))
-        except:
-            print("Should write as {0}".format(dimension))
+QA_Request_Latency = Histogram('QA_Request_Latency', 'Latency')
+Bizman_Request_Latency = Histogram('Bizman_Request_Latency', 'Latency')
 
+reference = {'QA':[QA_Request_Counts,QA_Request_Latency], 
+            'Bizman':[Bizman_Request_Counts, Bizman_Request_Latency]}
 #Converting data to prometheus format
 def write(data):
     
     if not data:
         print("Data passed in is null")
     else:
-        #dimensions = ['stage','jobID','requestID','timeBefore']
-        #self.checkData(dimensions, data)
-        # data = json.loads(data)
-
-        #extract the metrics that stores useful infos
         for envelope in data:
 
             data = envelope['data']
 
-            #Get each column of data 
+            #Get stage and timebefore
             stage = data['stage']
-            jobID = data['jobID']
-            requestID = data['requestID']
-            dateBefore_timeStamp = data['timeBefore']
+            latency = data['latency']
             
-            datetimeAfter_timeStamp = time.time()
-            timeStamp = datetimeAfter_timeStamp - dateBefore_timeStamp
-            All_timestamps.labels(stage, jobID, requestID).set(timeStamp)
-
-
+            reference[stage][0].inc()
+            reference[stage][1].observe(latency)
+                
 def clearAll():
     for name in list(REGISTRY._names_to_collectors.keys()):
         try:
@@ -52,9 +40,3 @@ def clearAll():
         except:
             print("{0} has already been deleted".format(name))
             pass
-            
-def existing():
-    return REGISTRY._names_to_collectors
-
-def monitor(port = 8000, address=''):
-    start_http_server(port, address)
