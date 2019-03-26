@@ -5,8 +5,6 @@ import adapter
 import output
 from wtforms import Form, TextAreaField, validators
 
-prometheus_host = 'http://prometheus:9090'
-http_port = 8000
 
 class ReviewForm(Form):
     filename = TextAreaField('',[validators.DataRequired(), validators.length(min = 5)])
