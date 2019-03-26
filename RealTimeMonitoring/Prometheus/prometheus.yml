@@ -30,4 +30,4 @@
     alerting:
       alertmanagers:
         - static_configs:
-            - targets: ['alertmanagerprom.azurewebsites.net']
+            - targets: ['promalerts.azurewebsites.net']

@@ -1,3 +1,7 @@
+
+
+#For testing, use dockerfile to deploy
+
 version: '3.0'
 
 services:

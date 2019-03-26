@@ -7,8 +7,8 @@ groups:
     expr: up == 0
  
   - alert: Requestoverloaded
-    expr: rate(Bizman_Request_Latency_count[5m]) >= 1
+    expr: rate(Bizman_Request_Latency_count[1m]) >= 1
     for: 1m
 
   - alert: BizmanLatencyOver7
-    expr: rate(Bizman_Request_Latency_sum[5m]) / rate(Bizman_Request_Latency_count[5m]) >= 7
+    expr: rate(Bizman_Request_Latency_sum[1m]) / rate(Bizman_Request_Latency_count[1m]) >= 7
