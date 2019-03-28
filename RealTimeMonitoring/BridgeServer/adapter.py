@@ -16,6 +16,7 @@ Bizman_Request_Latency = Histogram('Bizman_Request_Latency', 'Latency')
 
 reference = {'QA':[QA_Request_Counts,QA_Request_Latency], 
             'Bizman':[Bizman_Request_Counts, Bizman_Request_Latency]}
+
 #Converting data to prometheus format
 def write(data):
     
@@ -26,7 +27,7 @@ def write(data):
 
             data = envelope['data']
 
-            #Get stage and timebefore
+            #Get stage and latency
             stage = data['stage']
             latency = data['latency']
             
